@@ -1,4 +1,9 @@
-FROM golang
-WORKDIR /usr/src/app
+FROM golang as builder
+WORKDIR /usr/app
 COPY . .
-CMD ["go", "run", "hellogo.go"]
+RUN go mod init hellogo && \
+  go build
+
+FROM scratch
+COPY --from=builder /usr/app/hellogo .
+CMD ["./hellogo"]
